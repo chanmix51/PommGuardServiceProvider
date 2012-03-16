@@ -5,7 +5,7 @@ namespace GHub\Silex\PommGuard\Model;
 use \Pomm\Object\BaseObjectMap;
 use \Pomm\Exception\Exception;
 
-abstract class PommUserMap extends BaseObjectMap
+class PommUserMap extends BaseObjectMap
 {
     public function initialize()
     {
