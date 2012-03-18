@@ -16,7 +16,7 @@ class Session extends SfSession
         $this->user_map = $instance;
     }
 
-    public function setPommGuardUser(Model\PommGuardUser $user)
+    public function setPommUser(Model\PommUser $user)
     {
         $this->pomm_guard_user = $user;
 
@@ -26,7 +26,7 @@ class Session extends SfSession
         }
     }
 
-    public function removePommGuardUser()
+    public function removePommUser()
     {
         foreach ($this->user_map->getPrimaryKey() as $key)
         {
@@ -34,7 +34,7 @@ class Session extends SfSession
         }
     }
 
-    public function getPommGuardUser()
+    public function getPommUser()
     {
         if (is_null($this->pomm_guard_user)) 
         {
@@ -69,7 +69,7 @@ class Session extends SfSession
 
     public function hasCredential($credential)
     {
-        $user = $this->getPommGuardUser();
+        $user = $this->getPommUser();
 
         return (!is_null($user)) ? ($user->hasCredential($credential)) : false;
     }
@@ -77,7 +77,7 @@ class Session extends SfSession
 
     public function hasCredentials(Array $credentials)
     {
-        $user = $this->getPommGuardUser();
+        $user = $this->getPommUser();
 
         return (!is_null($user)) ? ($user->hasCredentials($credentials)) : false;
     }

@@ -89,7 +89,7 @@ _;
         return (!$pomm_users->isEmpty()) ? $pomm_users->current() : null;
     }
 
-    public function getSelectFields($alias) 
+    public function getSelectFields($alias = null) 
     {
         return array_filter($this->getFields($alias), function($val) {
             if (!preg_match('/password$/', $val)) 
