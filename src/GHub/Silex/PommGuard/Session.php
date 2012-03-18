@@ -3,7 +3,7 @@
 namespace GHub\Silex\PommGuard;
 
 use Symfony\Component\HttpFoundation\Session\Session AS SfSession;
-use GHub\Silex\PommGuard\Model\PommGuard\PommGuardUser;
+use GHub\Silex\PommGuard\Model;
 use Pomm\Object\BaseObjectMap;
 
 class Session extends SfSession
@@ -16,7 +16,7 @@ class Session extends SfSession
         $this->user_map = $instance;
     }
 
-    public function setPommGuardUser(PommGuardUser $user)
+    public function setPommGuardUser(Model\PommGuardUser $user)
     {
         $this->pomm_guard_user = $user;
 

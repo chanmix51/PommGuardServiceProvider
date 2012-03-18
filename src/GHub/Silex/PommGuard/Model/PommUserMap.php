@@ -22,7 +22,7 @@ class PommUserMap extends BaseObjectMap
 
         $this->pk_fields = array('login');
         $this->group_map = $this->connection
-            ->getMapFor('GHub\Silex\PommGuard\Model\PommGuard\PommGroup');
+            ->getMapFor('GHub\Silex\PommGuard\Model\PommGroup');
     }
 
     public function checkPassword(Array $pk, $password)
