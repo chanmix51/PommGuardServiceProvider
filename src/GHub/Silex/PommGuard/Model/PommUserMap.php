@@ -44,7 +44,7 @@ class PommUserMap extends BaseObjectMap
 
         $results = $this->findWhere($where, $where->getValues());
 
-        return (!$results->isEmpty()) ? $results->current() : null;
+        return (count($results) > 0) ? $results->current() : null;
     }
 
     public function findByPkWithAcls(Array $pk)
