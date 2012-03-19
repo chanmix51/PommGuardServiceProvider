@@ -25,7 +25,7 @@ class PommUserMap extends BaseObjectMap
             ->getMapFor('GHub\Silex\PommGuard\Model\PommGroup');
     }
 
-    public function checkPassword(Array $pk, $password)
+    public function checkPassword(Array $pk, $password, $plain = false)
     {
         $where = new Where();
         foreach ($pk as $field => $value)
@@ -33,7 +33,14 @@ class PommUserMap extends BaseObjectMap
             $where->andWhere(sprintf('%s = ?', $field), array($value));
         }
 
-        $where->andWhere('crypt(?, password) = password', array($password));
+        if ($plain === false)
+        {
+            $where->andWhere('crypt(?, password) = password', array($password));
+        }
+        else
+        {
+            $where->andWhere('password = ?', array($password));
+        }
 
         $results = $this->findWhere($where, $where->getValues());
 
