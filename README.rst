@@ -213,4 +213,16 @@ When generating the model files, you must specifically rebuild the base file for
         'parent_namespace' => '\GHub\Silex\PommGuard\Model'
         ));
 
-By default, entity classes extend ``Pomm\Object\BaseObject``, change ``MyUser`` class to extend ``\GHub\Silex\PommGuard\Model\PommUser`` and you're done.
+By default, entity classes extend ``Pomm\Object\BaseObject``, change ``MyUser`` class to extend ``\GHub\Silex\PommGuard\Model\PommUser`` and you're done. 
+
+If you also overload the ``PommGroup`` class, you have to tell ``PommUser`` of it in the ``initialize`` method of your ``PommUserMap`` class::
+
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->group_map = $this->connection
+            ->getMapForm('\Your\Schema\GroupEntity');
+    }
+
+Of course, this group map class has to extend the base class provided by PommGuard as it expects to have at least the given structure.

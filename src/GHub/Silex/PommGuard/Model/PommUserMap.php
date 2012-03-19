@@ -57,7 +57,7 @@ class PommUserMap extends BaseObjectMap
 
         $sql = <<<_
 WITH
-  acls (name) AS (
+  raw_acls (name) AS (
     SELECT DISTINCT 
         unnest(credentials) 
     FROM 
@@ -67,16 +67,23 @@ WITH
         g.name = ANY(v.groups) 
       AND 
         %s
+    ),
+  agg_acls (acls) AS (
+    SELECT
+       CASE
+         WHEN count(name) = 0 THEN ARRAY[]::varchar[]
+         ELSE array_agg(name)
+       END AS acls
+    FROM
+      raw_acls
     )
 SELECT 
     %s,
-    array_agg(a.name) AS credentials 
+    a.acls AS credentials 
 FROM 
     %s v, 
-    acls a 
+    agg_acls a 
 WHERE 
-    %s
-GROUP BY 
     %s
 _;
 
@@ -84,13 +91,12 @@ _;
             $this->getTableName(),
             $this->group_map->getTableName(),
             (string) $where,
-            $this->getSelectFields('v'),
+            join(', ', $this->getSelectFields('v')),
             $this->getTableName(),
-            (string) $where,
-            $this->getGroupByFields('v')
+            (string) $where
         );
 
-        $this->addVirtualField('credentials', 'String');
+        $this->addVirtualField('credentials', 'varchar[]');
         $pomm_users = $this->query($sql, array_merge($where->getValues(), $where->getValues()));
 
         return (!$pomm_users->isEmpty()) ? $pomm_users->current() : null;

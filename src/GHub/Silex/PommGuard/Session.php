@@ -20,31 +20,19 @@ class Session extends SfSession
     {
         $this->pomm_guard_user = $user;
 
-        foreach ($this->user_map->getPrimaryKey() as $key)
-        {
-            $this->set(sprintf('_pg_%s', $key), $user[$key]);
-        }
+        $this->set('_pg_guard_user', $user->get($this->user_map->getPrimaryKey()));
     }
 
     public function removePommUser()
     {
-        foreach ($this->user_map->getPrimaryKey() as $key)
-        {
-            $this->remove(sprintf('_pg_%s', $key));
-        }
+        $this->remove('_pg_guard_user');
     }
 
     public function getPommUser()
     {
         if (is_null($this->pomm_guard_user)) 
         {
-            $pk = array();
-            foreach ($this->user_map->getPrimaryKey() as $key)
-            {
-                $pk[$key] = $this->get(sprintf('_pg_%s', $key));
-            }
-
-            $this->pomm_guard_user = $this->user_map->findByPkWithAcls($pk);
+            $this->pomm_guard_user = $this->user_map->findByPkWithAcls($this->get('_pg_guard_user'));
         }
 
         return $this->pomm_guard_user;

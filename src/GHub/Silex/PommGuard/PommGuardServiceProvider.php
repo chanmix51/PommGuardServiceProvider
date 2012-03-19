@@ -47,9 +47,7 @@ class PommGuardServiceProvider implements ServiceProviderInterface
             return new Session($app['session.storage']);
         });
 
-        $app['session']->setUserMap($app['pomm']
-            ->getDatabase($app['pomm_guard.config.database'])
-            ->createConnection()
+        $app['session']->setUserMap($app['pomm_guard.config.connection']
             ->getMapFor($app['pomm_guard.config.user']));
     }
 }
