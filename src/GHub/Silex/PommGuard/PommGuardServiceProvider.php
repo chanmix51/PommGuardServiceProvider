@@ -18,10 +18,16 @@ class PommGuardServiceProvider implements ServiceProviderInterface
             $app['pomm_guard.config.logout_url'] = '/logout';
         }
 
-        $app['pomm_guard.config.database'] = 
-            $app->offsetExists('pomm_guard.config.database') 
-            ? $app['pomm_guard.config.database']
-            : null;
+        if ($app->offsetExists('pomm_guard.config.connection')) {
+            if (!(is_object($app['pomm_guard.config.connection']) 
+                and $app['pomm_guard.config.connection'] instanceof \Pomm\Connection\Connection)) {
+
+                    throw new \InvalidArgumentException(
+                        sprintf("'pomm_guard.config.connection' should be an instance of '\\Pomm\\Connection\\Connection'."));
+                }
+        } else {
+            $app['pomm_guard.config.connection'] = $app['pomm']->getDatabase()->createConnection();
+        }
 
         $app['pomm_guard.must_be_authenticated'] = $app->protect(function(Request $request) use ($app) {
             if (!$app['session']->isAuthenticated()) 
