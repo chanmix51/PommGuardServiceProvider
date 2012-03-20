@@ -1,0 +1,21 @@
+{
+    "name": "ghub/pomm-guard-service-provider",
+    "type": "library",
+    "description": "Authentication and authorization manager for Silex",
+    "keywords": ["silex", "pomm"],
+    "version": "0.0.1",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Grégoire HUBERT",
+            "email": "hubert.greg@gmail.com"
+        }
+    ],
+    "require": {
+        "silex/silex": "dev-master",
+        "pomm/pomm":   "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "GHub\\Silex\\PommGuard": "src" }
+    }
+}
