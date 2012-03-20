@@ -18,6 +18,10 @@ class PommGuardServiceProvider implements ServiceProviderInterface
             $app['pomm_guard.config.logout_url'] = '/logout';
         }
 
+        if (!$app->offsetExists('pomm_guard.config.user')) {
+            $app['pomm_guard.config.user'] = '\GHub\Silex\PommGuard\Model\PommUser';
+        }
+
         if ($app->offsetExists('pomm_guard.config.connection')) {
             if (!(is_object($app['pomm_guard.config.connection']) 
                 and $app['pomm_guard.config.connection'] instanceof \Pomm\Connection\Connection)) {

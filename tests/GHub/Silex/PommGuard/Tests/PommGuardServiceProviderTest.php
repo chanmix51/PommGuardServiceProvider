@@ -1,11 +1,14 @@
 <?php
 
-namespace \GHub\Silex\PommGuard\Test;
+namespace GHub\Silex\PommGuard\Tests;
 
 use Silex\Application;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+
+use GHub\Silex\PommGuard\PommGuardServiceProvider;
+use GHub\Silex\Pomm\PommServiceProvider;
 
 /**
  * PommGuardServiceProvider test cases.
@@ -18,9 +21,10 @@ class PommGuardServiceProviderTest extends \PHPUnit_Framework_TestCase
     {
         $app = new Application();
 
-        $app->register(new PommServiceProvider(array(
+        $app->register(new \Silex\Provider\SessionServiceProvider());
+        $app->register(new PommServiceProvider(), array(
             'pomm.databases' => array('default' => array('dsn' => 'pgsql://test/test', 'name' => 'test'))
-        )));
+        ));
 
         $app->register(new PommGuardServiceProvider());
 
@@ -33,7 +37,7 @@ class PommGuardServiceProviderTest extends \PHPUnit_Framework_TestCase
         });
 
         $app->get('/logout', function() use ($app) {
-            $app['session']->setAuthenticate(true);
+            $app['session']->authenticate(false);
 
             return 'Logged out successfully.';
         });
@@ -44,10 +48,10 @@ class PommGuardServiceProviderTest extends \PHPUnit_Framework_TestCase
 
         $app->get('/not-protected', function() use ($app) {
             return 'Not protected page.';
-        })->middleware($app['pomm.must_not_be_authenticated']);
+        })->middleware($app['pomm_guard.must_not_be_authenticated']);
 
         $app->get('/authenticate', function () use ($app) {
-            $app['session']->setAuthenticate(true);
+            $app['session']->authenticate(true);
 
             return 'Logged in successfully.';
         });
