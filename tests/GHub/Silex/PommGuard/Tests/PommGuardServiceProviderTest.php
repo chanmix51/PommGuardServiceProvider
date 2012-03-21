@@ -21,7 +21,6 @@ class PommGuardServiceProviderTest extends \PHPUnit_Framework_TestCase
     {
         $app = new Application();
 
-        $app->register(new \Silex\Provider\SessionServiceProvider());
         $app->register(new PommServiceProvider(), array(
             'pomm.databases' => array('default' => array('dsn' => 'pgsql://test/test', 'name' => 'test'))
         ));
