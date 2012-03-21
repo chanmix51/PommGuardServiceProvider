@@ -3,13 +3,15 @@
 namespace GHub\Silex\PommGuard;
 
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Silex\Provider\SessionServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
-class PommGuardServiceProvider implements ServiceProviderInterface
+class PommGuardServiceProvider extends SessionServiceProvider 
 {
     public function register(Application $app)
     {
+        parent::register($app);
+
         if (!$app->offsetExists('pomm_guard.config.login_url')) 
         {
             $app['pomm_guard.config.login_url'] = '/login';

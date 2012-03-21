@@ -61,7 +61,9 @@ Registering the provider is easy as::
 
     $app->register(new \GHub\Silex\PommGuard\PommGuardServiceProvider());
 
-The following options can be set in the container prior to registration:
+This provider extends the `Silex session provider <http://silex.sensiolabs.org/doc/providers/session.html>`_ so you might pass it all the parameters it accepts.
+
+The following options are specific to pomm guard:
 
 pomm_guard.config.login_url
     Url non authenticated users will be redirected to when trying to reach protected content. (default */login*)
