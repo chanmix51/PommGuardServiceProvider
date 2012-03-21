@@ -4,13 +4,13 @@ PommGuardServiceProvider
 
 **== IMPORTANT ==** 
 
-This is alpha software and it does not work nor have tests for now. It should be used by developers only. 
+This is beta software and even if it's tested and working, it has not yet been tried on real life projects. 
 
 ************
 Installation
 ************
 
-There'll be some instructions when the package is not alpha.
+PommGuardServiceProvider can be installed either by composer or as git submodule. You can of course just download the archive and set your autoloader.
 
 *****
 Setup
@@ -57,20 +57,31 @@ If you want to enable the automatic encryption, you must include the ``trigger.s
 Silex
 =====
 
-The following services must be registered before the ``PommGuardServiceProvider`` service:
- * SessionServiceProvider
- * PommServiceProvider
-
- ::
+Registering the provider is easy as::
 
     $app->register(new \GHub\Silex\PommGuard\PommGuardServiceProvider());
 
-An instance of the user map class will be instanciated with a new connection from the default database. You can enforce an existing connection::
+The following options can be set in the container prior to registration:
 
-    $app->register(new \GHub\Silex\PommGuard\PommGuardServiceProvider(), array(
-        'pomm_guard.config.connection' => $app['pomm']->getDatabase('plop')
-            ->createConnection()
-    ));
+pomm_guard.config.login_url
+    Url non authenticated users will be redirected to when trying to reach protected content. (default */login*)
+pomm_guard.config.logout_url
+    Url authenticated users will be redirected to when trying to reach non-protected content. (default */logout*)
+pomm_guard.config.user
+    Fully qualified User's Pomm model class name. (default ``\GHub\Silex\PommGuard\Model\PommUser``)
+pomm_guard.config.connection
+    Connection instance, if none given a connection from the default database will be created on demand.
+
+
+You can enforce a custom connection::
+
+    $app['pomm_guard.config.connection'] = $app->share(function() use ($app) {
+        $logger = new Pomm\Tools\Logger();
+
+        return $app['pomm']->getDatabase('plop')
+            ->createConnection(array('identity_mapper' => 'Pomm\Identity\IdentityMapperStrict'))
+            ->registerFilter(new Pomm\FilterChain\LoggerFilter($logger));
+            });
 
 This is useful when you want to use custom database or query filters like the logger.
 
@@ -89,7 +100,7 @@ If the provided ``pomm_user`` and ``pomm_group`` tables fit your needs, you do n
 This way, all you have got to do is to insert or update rows giving plain text passwords, they will be encrypted on the fly::
 
     $map = $connection
-      $->getMapFor('GHub\Silex\PommGuard\Model\PommUser');
+      ->getMapFor('GHub\Silex\PommGuard\Model\PommUser');
     
     $user = $map->createObject(array(
         'login'     => 'pika',
@@ -126,7 +137,7 @@ must_be_authenticated()
     return a redirection to ``$app['pomm_guard.config.login_url']`` (default ``/login``) if the current session is NOT authenticated.
 
 must_not_be_authenticated()
-    return a redirection to ``$app['pomm_guard.config.login_url']`` (default ``/login``) if the current session IS authenticated.
+    return a redirection to ``$app['pomm_guard.config.login_url']`` (default ``/logout``) if the current session IS authenticated.
 
 ::
 
@@ -222,7 +233,7 @@ If you also overload the ``PommGroup`` class, you have to tell ``PommUser`` of i
         parent::initialize();
 
         $this->group_map = $this->connection
-            ->getMapForm('\Your\Schema\GroupEntity');
+            ->getMapFor('\Your\Schema\GroupEntity');
     }
 
 Of course, this group map class has to extend the base class provided by PommGuard as it expects to have at least the given structure.
