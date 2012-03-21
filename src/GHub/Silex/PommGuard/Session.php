@@ -3,7 +3,12 @@
 namespace GHub\Silex\PommGuard;
 
 use Symfony\Component\HttpFoundation\Session\Session AS SfSession;
+use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+
 use GHub\Silex\PommGuard\Model;
+
 use Pomm\Object\BaseObjectMap;
 
 class Session extends SfSession
@@ -11,15 +16,14 @@ class Session extends SfSession
     protected $pomm_guard_user;
     protected $user_map;
 
-    public function setUserMap(BaseObjectMap $instance)
+    public function __construct(BaseObjectMap $user_map, SessionStorageInterface $storage = null, AttributeBagInterface $attributes = null, FlashBagInterface $flashes = null)
     {
-        $this->user_map = $instance;
+        parent::__construct($storage, $attributes, $flashes);
+        $this->user_map = $user_map;
     }
 
     public function setPommUser(Model\PommUser $user)
     {
-        $this->pomm_guard_user = $user;
-
         $this->set('_pg_guard_user', $user->get($this->user_map->getPrimaryKey()));
     }
 
@@ -30,6 +34,11 @@ class Session extends SfSession
 
     public function getPommUser()
     {
+        if (!$this->has('_pg_guard_user')) 
+        {
+            return null;
+        }
+
         if (is_null($this->pomm_guard_user)) 
         {
             $this->pomm_guard_user = $this->user_map->findByPkWithAcls($this->get('_pg_guard_user'));
@@ -61,7 +70,6 @@ class Session extends SfSession
 
         return (!is_null($user)) ? ($user->hasCredential($credential)) : false;
     }
-
 
     public function hasCredentials(Array $credentials)
     {

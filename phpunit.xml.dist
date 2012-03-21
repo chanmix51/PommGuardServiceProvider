@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit bootstrap="./vendor/.composer/autoload.php">
+    <php>
+        <var name="dsn" value="pgsql://user:pass@host:port/db_name" />
+    </php>
     <testsuites>
         <testsuite name="PommGuardServiceProvider Test Suite">
             <directory>./tests</directory>
