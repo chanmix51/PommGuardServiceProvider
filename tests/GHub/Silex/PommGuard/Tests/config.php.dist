@@ -1,0 +1,5 @@
+<?php
+
+$config = array('dsn' => 'pgsql://user:pass@host:port/db_name');
+
+return $config;

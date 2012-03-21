@@ -23,7 +23,7 @@ class PommUser extends BaseObject
         {
             foreach ($credentials as $credential)
             {
-                if (!array_key_exists($this->getCredentials(), $credential))
+                if (!array_key_exists($credential, $this->getCredentials()))
                 {
                     return false;
                 }
