@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * PommGuardServiceProvider 
+ *
+ * This file is part of the PommGuard project.
+ * Copyleft 2012 Grégoire HUBERT <hubert.greg@gmail.com>
+ * This is free software please check the LICENCE.txt file that comes with this 
+ * package.
+ **/
+
 namespace GHub\Silex\PommGuard;
 
 use Silex\Application;
@@ -8,6 +17,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PommGuardServiceProvider extends SessionServiceProvider 
 {
+    /**
+     * register
+     *
+     * @see SessionServiceProvider
+     **/
     public function register(Application $app)
     {
         parent::register($app);
@@ -53,6 +67,3 @@ class PommGuardServiceProvider extends SessionServiceProvider
         });
     }
 }
-
-
-
